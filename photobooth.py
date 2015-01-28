@@ -1,5 +1,6 @@
 import sys
 import select
+import multiprocessing
 
 from PIL import Image
 
