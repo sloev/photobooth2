@@ -34,6 +34,7 @@ def main():
                 if(c =='s'):
                     shoot()
     except KeyboardInterrupt:
+        sys.stderr.write("quiting")
         pass
     #give poison pill to workers!
 
