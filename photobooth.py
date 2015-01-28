@@ -11,12 +11,21 @@ from modules.camera import Camera
 
 def main():
     strip = Image.open("strip.jpg")
+    queues = []
     printer_queue = multiprocessing.Queue()
+    queues.append(printer_queue)
     social_queue = multiprocessing.Queue()
+    queues.append(social_queue)
     camera = Camera()
+    procs = []
     printer_worker = PrinterWorker(printer_queue)
+    procs.append(printer_worker)
     social_worker = SocialWorker(social_queue)
 
+    procs.append(social_worker)
+
+    for i in procs:
+        i.start()
     def shoot():
         for _ in range(2):
             image = camera.shoot()
@@ -29,29 +38,19 @@ def main():
     try:
         sys.stderr.write("press \"s\" to shoot!")
         while True:
-            print "inside"
             while sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
                 c = sys.stdin.readline()
                 c = c[0:1]
                 if(c =='s'):
                     shoot()
     except KeyboardInterrupt:
-        print "quiting"
         sys.stderr.write("quiting")
         pass
     #give poison pill to workers!
-
-    #first the printer
-    printer_queue.put(None)
-    sys.stderr.write("printer_worker joining")
-    printer_worker.join()
-    sys.stderr.write("printer_worker joined")
-
-    #then the social
-    social_queue.put(None)
-    sys.stderr.write("social_worker joining")
-    social_worker.join()
-    sys.stderr.write("social_worker joined")
+    for i in queues:
+        i.put(None)
+    for i in procs:
+        i.join()
 
 if __name__ == "__main__":
     main()
