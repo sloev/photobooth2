@@ -3,9 +3,21 @@
 #                    to simple ESC-POS image on stdout
 # scruss - 2014-07-26 - WTFPL (srsly)
 
+import multiprocessing
 import sys
 from PIL import Image, ImageOps
 import struct
+
+class PrinterWorker(multiprocessing.Process):
+    def __init__(self, _queue):
+        super(PrinterWorker, self).__init__()
+        self._queue = _queue
+        self._printer = Printer()
+
+    def run(self):
+        for image in iter(self.queue.get, None):
+            if image:
+                self._printer.print_image(image)
 
 class Printer():
     """Thermal printer
