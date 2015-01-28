@@ -12,6 +12,6 @@ class SocialWorker(multiprocessing.Process):
         self._queue = _queue
 
     def run(self):
-        for image in iter(self.queue.get, None):
+        for image in iter(self._queue.get, None):
             if image:
                 sys.stderr.write("socializing image")

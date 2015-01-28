@@ -15,7 +15,7 @@ class PrinterWorker(multiprocessing.Process):
         self._printer = Printer()
 
     def run(self):
-        for image in iter(self.queue.get, None):
+        for image in iter(self._queue.get, None):
             if image:
                 self._printer.print_image(image)
 
