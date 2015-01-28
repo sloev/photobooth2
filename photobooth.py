@@ -28,12 +28,14 @@ def main():
     try:
         sys.stderr.write("press \"s\" to shoot!")
         while True:
+            print "inside"
             while sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
                 c = sys.stdin.readline()
                 c = c[0:1]
                 if(c =='s'):
                     shoot()
     except KeyboardInterrupt:
+        print "quiting"
         sys.stderr.write("quiting")
         pass
     #give poison pill to workers!
@@ -50,5 +52,5 @@ def main():
     social_worker.join()
     sys.stderr.write("social_worker joined")
 
-if __name__ is "__main__":
+if __name__ == "__main__":
     main()
