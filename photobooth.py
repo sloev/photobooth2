@@ -54,8 +54,6 @@ def main():
         i.put(None)
     for i in procs:
         i.join()
-    sys.stdout.flush()
-    sys.stderr.flush()
 
 if __name__ == "__main__":
     main()
