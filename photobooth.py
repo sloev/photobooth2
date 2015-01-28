@@ -9,6 +9,9 @@ from modules.social import SocialWorker
 
 from modules.camera import Camera
 
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 def main():
     strip = Image.open("strip.jpg")
     queues = []
