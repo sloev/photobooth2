@@ -16,8 +16,6 @@ class Printer():
     # print all of the images!
     def print_image(self, image):
         # if image is not 1-bit, convert it
-        if image.mode != '1':
-            image = image.convert('1')
         bbox=image.getbbox()
         image=image.crop(((bbox[2]/2)-(bbox[3]/2),0,(bbox[2]/2)+(bbox[3]/2),bbox[3]))
         image=image.resize((384,384))
@@ -27,6 +25,8 @@ class Printer():
         #                    image.size[1]), 'white')
         #    image2.paste(image, (0, 0))
         #    image = image2
+        if image.mode != '1':
+            image = image.convert('1')
 
         # Invert image, via greyscale for compatibility
         #  (no, I don't know why I need to do this)
