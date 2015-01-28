@@ -18,13 +18,15 @@ class Printer():
         # if image is not 1-bit, convert it
         if image.mode != '1':
             image = image.convert('1')
-
+        bbox=image.getbbox()
+        image=image.crop(((bbox[2]/2)-(bbox[3]/2),0,(bbox[2]/2)+(bbox[3]/2),bbox[3]))
+        image=image.resize((384,384))
         # if image width is not a multiple of 8 pixels, fix that
-        if image.size[0] % 8:
-            image2 = Image.new('1', (image.size[0] + 8 - image.size[0] % 8,
-                            image.size[1]), 'white')
-            image2.paste(image, (0, 0))
-            image = image2
+        #if image.size[0] % 8:
+        #    image2 = Image.new('1', (image.size[0] + 8 - image.size[0] % 8,
+        #                    image.size[1]), 'white')
+        #    image2.paste(image, (0, 0))
+        #    image = image2
 
         # Invert image, via greyscale for compatibility
         #  (no, I don't know why I need to do this)
