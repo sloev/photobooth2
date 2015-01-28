@@ -1,7 +1,7 @@
 import sys
 import select
 
-import Image
+from PIL import Image
 
 from modules.printer import PrinterWorker
 from modules.social import SocialWorker
