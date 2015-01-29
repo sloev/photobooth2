@@ -18,6 +18,7 @@ class PrinterWorker(multiprocessing.Process):
         for image in iter(self._queue.get, None):
             if image:
                 self._printer.print_image(image)
+        sys.stderr.write("printer joined")
 
 class Printer():
     """Thermal printer

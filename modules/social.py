@@ -15,3 +15,4 @@ class SocialWorker(multiprocessing.Process):
         for image in iter(self._queue.get, None):
             if image:
                 sys.stderr.write("socializing image")
+        sys.stderr.write("social worker joined")
