@@ -25,7 +25,6 @@ class PrinterWorker(multiprocessing.Process):
                 if counter > 1:
                     counter = 0
                     self._printer.print_image(self._strip)
-                    self._printer.print_image(image)
                     sys.stderr.write("send two images, and strip to the printer!\n")
         sys.stderr.write("printer joined\n")
 
