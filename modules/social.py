@@ -31,7 +31,7 @@ class SocialWorker(multiprocessing.Process):
                     counter = 0
                     sys.stderr.write("socializing image\n")
                     message = "Photo #%d" % self._photonumber
-                    image.save("tmp.jpg")
+                    image.save("tmp.jpg", "JPEG")
                     self._facebook.upload_image("tmp.jpg", message)
                     self._photonumber += 1
                     f = open("photonumber.tmp", 'w')
