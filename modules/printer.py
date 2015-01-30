@@ -32,7 +32,7 @@ class PrinterWorker(multiprocessing.Process):
         image = img.crop(((bbox[2]/2)-(bbox[3]/2),0,(bbox[2]/2)+(bbox[3]/2),bbox[3]))
         img = Image.new("RGB", (384,384), (255,255,255))
 
-        img.paste(image, (2, 2, 382, 382))
+        img.paste(image, (2, 2, 380, 380))
 
         return img
 
