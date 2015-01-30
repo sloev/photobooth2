@@ -5,11 +5,22 @@
 
 import multiprocessing
 import sys
+import os
+
+import json,time
+from facepy import GraphAPI
+from PIL import Image
+
 
 class SocialWorker(multiprocessing.Process):
     def __init__(self, _queue):
         super(SocialWorker, self).__init__()
         self._queue = _queue
+        with open("photonumber.txt", 'r') as f:
+            self._photonumber = int(f.readline())
+        with open('apiconfigs.txt', 'rb') as fp:
+            config = json.load(fp)
+            self._facebook = Facebook(config)
 
     def run(self):
         counter = 0
@@ -19,4 +30,45 @@ class SocialWorker(multiprocessing.Process):
                 if counter > 3:
                     counter = 0
                     sys.stderr.write("socializing image\n")
+                    message = "Photo #%d" % self._photonumber
+                    self._facebook.upload_image(image, message)
+                    self._photonumber += 1
+                    f = open("photonumber.tmp", 'w')
+                    f.write(str(self._photonumber))
+                    f.flush()
+                    os.fsync(f.fileno()) 
+                    f.close()
+                    os.rename("photonumber.tmp", "photonumber.txt")
+
+
         sys.stderr.write("social worker joined\n")
+
+class Facebook(object):
+    '''
+    classdocs
+    '''
+    def __init__(self,config):
+        self.facebook = GraphAPI(config["token"])
+        try:
+            me=self.facebook.get('me')
+            sys.stderr.write(json.dumps(me, indent=4))
+
+        except:
+            pass#self.facebook=None
+
+    def upload_mage(self,image, messageStr="sdfsafdsdfafgsdghdef"):
+        tries=0
+        while(tries<5):
+            try:
+                sys.stderr.write(self.facebook.post(
+                                   path = 'me/photos',
+                                   source = open(image),
+                                   message=messageStr
+                                   ))
+                break
+            except:
+                sys.stderr.write("facebook error, try #"+str(tries))
+                time.sleep(0.1)
+                tries=tries+1
+
+        sys.stderr.write("finnished uploading to facebook\n")
