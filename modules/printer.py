@@ -21,7 +21,9 @@ class PrinterWorker(multiprocessing.Process):
             if image:
                 image = self._compose_image(image)
                 self._printer.print_image(image)
+                counter += 1
                 if counter > 1:
+                    counter = 0
                     self._printer.print_image(self._strip)
                     self._printer.print_image(image)
                     sys.stderr.write("send two images, and strip to the printer!\n")
