@@ -43,6 +43,8 @@ def main():
                 c = c[0:1]
                 if(c =='s'):
                     shoot()
+                elif(c=='q'):
+                    break
     except KeyboardInterrupt:
         sys.stderr.write("quiting")
         pass
