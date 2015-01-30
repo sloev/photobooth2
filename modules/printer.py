@@ -43,13 +43,6 @@ class Printer():
 
     # print all of the images!
     def print_image(self, image):
-        # if image is not 1-bit, convert it
-                # if image width is not a multiple of 8 pixels, fix that
-        #if image.size[0] % 8:
-        #    image2 = Image.new('1', (image.size[0] + 8 - image.size[0] % 8,
-        #                    image.size[1]), 'white')
-        #    image2.paste(image, (0, 0))
-        #    image = image2
         if image.mode != '1':
             image = image.convert('1')
 

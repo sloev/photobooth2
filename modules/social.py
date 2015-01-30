@@ -12,7 +12,10 @@ class SocialWorker(multiprocessing.Process):
         self._queue = _queue
 
     def run(self):
+        counter = 0
         for image in iter(self._queue.get, None):
             if image:
-                sys.stderr.write("socializing image")
-        sys.stderr.write("social worker joined")
+                counter += 1
+                if counter > 3:
+                    sys.stderr.write("socializing image\n")
+        sys.stderr.write("social worker joined\n")
