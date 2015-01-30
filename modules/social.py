@@ -20,7 +20,7 @@ class SocialWorker(multiprocessing.Process):
             self._photonumber = int(f.readline())
         with open('apiconfigs.txt', 'rb') as fp:
             config = json.load(fp)
-            self._facebook = Facebook(config)
+            self._facebook = Facebook(config["facebook"])
 
     def run(self):
         counter = 0
