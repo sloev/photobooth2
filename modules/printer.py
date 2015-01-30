@@ -16,33 +16,25 @@ class PrinterWorker(multiprocessing.Process):
         self._strip = Image.open("strip.jpg")
 
     def run(self):
-        images = []
+        counter = 0
         for image in iter(self._queue.get, None):
             if image:
-                images.append(image)
-                if len(images) > 1:
-                    image = self._compose_image(images)
+                image = self._compose_image(image)
+                self._printer.print_image(image)
+                if counter > 1:
+                    self._printer.print_image(self._strip)
                     self._printer.print_image(image)
-                    sys.stderr.write("got 2 images composed, now printing!\n")
+                    sys.stderr.write("send two images, and strip to the printer!\n")
         sys.stderr.write("printer joined\n")
 
-    def _compose_image(self, images):
-        y = 10
-        height = 404 #including 20pixel margin
+    def _compose_image(self, img):
+        bbox = img.getbbox()
+        image = img.crop(((bbox[2]/2)-(bbox[3]/2),0,(bbox[2]/2)+(bbox[3]/2),bbox[3]))
+        img = Image.new("RGB", (384,384), (255,255,255))
 
-        strip = self._strip.copy()
+        img.paste(image, (2, 2, 382, 382))
 
-        while(images):
-            image = images.pop()
-
-            bbox=image.getbbox()
-            image=image.crop(((bbox[2]/2)-(bbox[3]/2),0,(bbox[2]/2)+(bbox[3]/2),bbox[3]))
-            y += height
-            image=image.resize((384,384))
-
-            strip.paste(image, (0, y, 384, y + 384))
-
-        return strip
+        return img
 
 class Printer():
     """Thermal printer
