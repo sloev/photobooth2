@@ -13,7 +13,6 @@ from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def main():
-    strip = Image.open("strip.jpg")
     queues = []
     printer_queue = multiprocessing.Queue()
     queues.append(printer_queue)
@@ -30,14 +29,11 @@ def main():
     for i in procs:
         i.start()
     def shoot():
-        for _ in range(2):
+        for i in range(4):
             image = camera.shoot()
-            printer_queue.put(image)
             social_queue.put(image)
-        printer_queue.put(strip)
-
-        for _ in range(2):
-            social_queue.put(camera.shoot())
+            if not i % 2: #first and third image gets printed
+                printer_queue.put(image)
     try:
         sys.stderr.write("press \"s\" to shoot!")
         while True:

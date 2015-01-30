@@ -13,12 +13,36 @@ class PrinterWorker(multiprocessing.Process):
         super(PrinterWorker, self).__init__()
         self._queue = _queue
         self._printer = Printer()
+        self._strip = Image.open("strip.jpg")
 
     def run(self):
+        images = []
         for image in iter(self._queue.get, None):
             if image:
-                self._printer.print_image(image)
-        sys.stderr.write("printer joined")
+                images.append(image)
+                if len(images) > 1:
+                    image = self._compose_image(images)
+                    self._printer.print_image(image)
+                    sys.stderr.write("got 2 images composed, now printing!\n")
+        sys.stderr.write("printer joined\n")
+
+    def _compose(self, images):
+        y = 10
+        height = 404 #including 20pixel margin
+
+        strip = self._strip.copy()
+
+        while(images):
+            image = images.pop()
+
+            bbox=image.getbbox()
+            image=image.crop(((bbox[2]/2)-(bbox[3]/2),0,(bbox[2]/2)+(bbox[3]/2),bbox[3]))
+            y += height
+            image=image.resize((384,384))
+
+            strip.paste(image, (0, y, 384, y + 384))
+
+        return strip
 
 class Printer():
     """Thermal printer
@@ -29,10 +53,7 @@ class Printer():
     # print all of the images!
     def print_image(self, image):
         # if image is not 1-bit, convert it
-        bbox=image.getbbox()
-        image=image.crop(((bbox[2]/2)-(bbox[3]/2),0,(bbox[2]/2)+(bbox[3]/2),bbox[3]))
-        image=image.resize((384,384))
-        # if image width is not a multiple of 8 pixels, fix that
+                # if image width is not a multiple of 8 pixels, fix that
         #if image.size[0] % 8:
         #    image2 = Image.new('1', (image.size[0] + 8 - image.size[0] % 8,
         #                    image.size[1]), 'white')
