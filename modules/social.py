@@ -17,5 +17,6 @@ class SocialWorker(multiprocessing.Process):
             if image:
                 counter += 1
                 if counter > 3:
+                    counter = 0
                     sys.stderr.write("socializing image\n")
         sys.stderr.write("social worker joined\n")
