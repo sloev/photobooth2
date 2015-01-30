@@ -33,7 +33,7 @@ class PrinterWorker(multiprocessing.Process):
         bbox = img.getbbox()
         image = img.crop(((bbox[2]/2)-(bbox[3]/2),0,(bbox[2]/2)+(bbox[3]/2),bbox[3]))
         image = image.resize((382,382))
-        image = image.expand(image, 1,(255,255,255))
+        image = ImageOps.expand(image, 1,(255,255,255))
         return image
 
 class Printer():
