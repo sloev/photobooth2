@@ -57,7 +57,7 @@ class Facebook(object):
         except:
             pass#self.facebook=None
 
-    def upload_mage(self,image, messageStr="sdfsafdsdfafgsdghdef"):
+    def upload_image(self,image, messageStr="sdfsafdsdfafgsdghdef"):
         tries=0
         while(tries<5):
             try:
