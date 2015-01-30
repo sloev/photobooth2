@@ -26,7 +26,7 @@ class PrinterWorker(multiprocessing.Process):
                     sys.stderr.write("got 2 images composed, now printing!\n")
         sys.stderr.write("printer joined\n")
 
-    def _compose(self, images):
+    def _compose_image(self, images):
         y = 10
         height = 404 #including 20pixel margin
 
