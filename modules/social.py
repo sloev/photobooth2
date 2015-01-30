@@ -61,14 +61,14 @@ class Facebook(object):
         tries=0
         while(tries<5):
             try:
-                sys.stderr.write(self.facebook.post(
+                s = self.facebook.post(
                                    path = 'me/photos',
                                    source = open(image),
                                    message=messageStr
-                                   ))
+                                   )
                 break
             except:
-                sys.stderr.write("facebook error, try #"+str(tries))
+                sys.stderr.write("facebook error, try #%d\n" % tries)
                 time.sleep(0.1)
                 tries=tries+1
 

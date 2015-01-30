@@ -28,6 +28,7 @@ def main():
 
     for i in procs:
         i.start()
+
     def shoot():
         for i in range(4):
             image = camera.shoot()
