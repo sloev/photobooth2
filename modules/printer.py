@@ -30,10 +30,10 @@ class PrinterWorker(multiprocessing.Process):
     def _compose_image(self, img):
         bbox = img.getbbox()
         image = img.crop(((bbox[2]/2)-(bbox[3]/2),0,(bbox[2]/2)+(bbox[3]/2),bbox[3]))
-        img = Image.new("RGB", (384,384), (255,255,255))
-
+        img = Image.new('RGB', (384,384), (255,255,255))
+        sys.stderr.write(str(img.size))
+        sys.stderr.write(str(image.size))
         img.paste(image, (2, 2, 380, 380))
-
         return img
 
 class Printer():
