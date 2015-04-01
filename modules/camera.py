@@ -7,7 +7,7 @@ Created on Apr 22, 2014
 import picamera
 from PIL import Image
 import io
-
+import sys
 
 class Camera(object):
     '''
