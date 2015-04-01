@@ -19,10 +19,14 @@ class Camera(object):
         Constructor
         '''
         self.camera = picamera.PiCamera()
+
+        sys.stderr.write("[!] camera initialized\n")
       #  self.camera.resolution=(800,600)
 
     def shoot(self):
         stream = io.BytesIO()
         self.camera.capture(stream, format='jpeg')
         stream.seek(0)
-        return Image.open(stream)
+        image = Image.open(stream)
+
+        sys.stderr.write("[*] camera took one photo\n")
