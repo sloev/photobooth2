@@ -19,7 +19,6 @@ def main():
     social_queue = multiprocessing.Queue()
     queues.append(social_queue)
     camera = Camera()
-    end_strip = Image.open("end_strip.jpg")
 
     procs = []
     printer_worker = PrinterWorker(printer_queue)
@@ -37,7 +36,6 @@ def main():
             social_queue.put(image)
             if not i % 2: #first and third image gets printed
                 printer_queue.put(image)
-        printer_queue.put(end_strip)
     try:
         sys.stderr.write("press \"s\" to shoot!")
         while True:
