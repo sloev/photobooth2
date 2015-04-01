@@ -30,6 +30,7 @@ def main():
             social_queue.put(image)
             if not i % 2: #first and third image gets printed
                 printer_queue.put(image)
+        sys.stderr.write("press \"s\" to shoot!\n")
 
     wiring_setup()
     queues = []
@@ -49,9 +50,9 @@ def main():
     for i in procs:
         i.start()
 
+    sys.stderr.write("press \"s\" to shoot!\n")
     try:
         while True:
-            sys.stderr.write("press \"s\" to shoot!\n")
             time.sleep(0.2)
             if(wiringpi.digitalRead(4) == 0):
                 time.sleep(0.2)
