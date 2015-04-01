@@ -15,6 +15,22 @@ from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def main():
+    def wiring_setup():
+        wiringpi.wiringPiSetupGpio()
+        wiringpi.pinMode(4, 0)
+        wiringpi.pinMode(18, 2)
+
+    def wiring_cleanup():
+        wiringpi.digitalWrite(18, 0)
+        wiringpi.pinMode(18, 0)
+
+    def shoot():
+        for i in range(4):
+            image = camera.shoot()
+            social_queue.put(image)
+            if not i % 2: #first and third image gets printed
+                printer_queue.put(image)
+
     wiring_setup()
     queues = []
     printer_queue = multiprocessing.Queue()
@@ -33,22 +49,7 @@ def main():
     for i in procs:
         i.start()
 
-    def wiring_setup():
-        wiringpi.wiringPiSetupGpio()
-        wiringpi.pinMode(4, 0)
-        wiringpi.pinMode(18, 2)
-
-    def wiring_cleanup():
-        wiringpi.digitalWrite(18, 0)
-        wiringpi.pinMode(18, 0)
-
-    def shoot():
-        for i in range(4):
-            image = camera.shoot()
-            social_queue.put(image)
-            if not i % 2: #first and third image gets printed
-                printer_queue.put(image)
-    try:
+        try:
         while True:
             sys.stderr.write("press \"s\" to shoot!\n")
             time.sleep(0.2)
