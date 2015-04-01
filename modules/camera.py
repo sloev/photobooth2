@@ -9,7 +9,7 @@ from PIL import Image
 import io
 
 
-class Picamera(object):
+class Camera(object):
     '''
     classdocs
     '''
