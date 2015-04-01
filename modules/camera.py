@@ -30,3 +30,5 @@ class Camera(object):
         image = Image.open(stream)
 
         sys.stderr.write("[*] camera took one photo\n")
+
+        return image
