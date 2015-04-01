@@ -29,6 +29,7 @@ class SocialWorker(multiprocessing.Process):
                 counter += 1
                 if counter > 3:
                     counter = 0
+
                     sys.stderr.write("socializing image\n")
                     message = "Photo #%d" % self._photonumber
                     image.save("tmp.jpg", "JPEG")
@@ -40,9 +41,18 @@ class SocialWorker(multiprocessing.Process):
                     os.fsync(f.fileno()) 
                     f.close()
                     os.rename("photonumber.tmp", "photonumber.txt")
-
-
         sys.stderr.write("social worker joined\n")
+
+    def compose_image(self, images):
+        y = 0
+        x = 0
+        strip = self._strip
+
+        for image in images:
+            strip = image
+
+        return strip
+
 
 class Facebook(object):
     '''

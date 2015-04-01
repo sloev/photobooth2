@@ -1,7 +1,28 @@
-from PIL import Image
+'''
+Created on Apr 22, 2014
 
-class Camera():
+@author: johannes
+'''
+
+import picamera
+from PIL import Image
+import io
+
+
+class Picamera(object):
+    '''
+    classdocs
+    '''
+
     def __init__(self):
-        self._image = Image.open("test.jpg")
+        '''
+        Constructor
+        '''
+        self.camera = picamera.PiCamera()
+      #  self.camera.resolution=(800,600)
+
     def shoot(self):
-        return self._image
+        stream = io.BytesIO()
+        self.camera.capture(stream, format='jpeg')
+        stream.seek(0)
+        return Image.open(stream)
