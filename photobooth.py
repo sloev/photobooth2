@@ -49,7 +49,7 @@ def main():
     for i in procs:
         i.start()
 
-        try:
+    try:
         while True:
             sys.stderr.write("press \"s\" to shoot!\n")
             time.sleep(0.2)
