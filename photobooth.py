@@ -16,11 +16,13 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def main():
     def wiring_setup():
+        pass
         wiringpi.wiringPiSetupGpio()
         wiringpi.pinMode(4, 0)
         wiringpi.pinMode(18, 2)
 
     def wiring_cleanup():
+        pass
         wiringpi.digitalWrite(18, 0)
         wiringpi.pinMode(18, 0)
 
@@ -29,6 +31,7 @@ def main():
             image = camera.shoot()
             social_queue.put(image)
             if not i % 2: #first and third image gets printed
+                pass
                 printer_queue.put(image)
         sys.stderr.write("press \"s\" to shoot!\n")
 
