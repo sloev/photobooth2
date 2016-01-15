@@ -18,9 +18,9 @@ class PrinterWorker(multiprocessing.Process):
 
     def run(self):
         counter = 0
-        for image in iter(self._queue.get, None):
-            if image:
-                image.save("outputtmp%d.jpg" % counter, "JPEG")
+        for filename in iter(self._queue.get, None):
+            if filename:
+                image = Image.open(filename)
                 image = self._compose_image(image)
                 self._printer.print_image(image)
                 counter += 1

@@ -26,10 +26,10 @@ def main():
 
     def shoot():
         for i in range(4):
-            image = camera.shoot()
-            social_queue.put(image)
+            filename = camera.shoot("%d"%i)
+            social_queue.put(filename)
             if not i % 2: #first and third image gets printed
-                printer_queue.put(image)
+                printer_queue.put(filename)
         sys.stderr.write("press \"s\" to shoot!\n")
 
     wiring_setup()
