@@ -20,8 +20,6 @@ class PrinterWorker(multiprocessing.Process):
         counter = 0
         for image in iter(self._queue.get, None):
             if image:
-                im = Image.new("RGB", (1024,768))
-                image = im.putdata(image)
                 image.save("outputtmp%d.jpg" % counter, "JPEG")
                 image = self._compose_image(image)
                 self._printer.print_image(image)
