@@ -31,7 +31,7 @@ class PrinterWorker(multiprocessing.Process):
     def _compose_image(self, img):
         bbox = img.getbbox()
         #image = img.crop(((bbox[2]/2)-(bbox[3]/2),0,(bbox[2]/2)+(bbox[3]/2),bbox[3]))
-        image = image.resize((384,384))
+        image = img.resize((384,384))
         #image = ImageOps.expand(image, 1,(255,255,255))
         return image
 
