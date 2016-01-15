@@ -19,7 +19,7 @@ class Camera(object):
         Constructor
         '''
         self.camera = picamera.PiCamera()
-
+        self.camera.resolution=(1024,768)
         sys.stderr.write("[!] camera initialized\n")
       #  self.camera.resolution=(800,600)
 

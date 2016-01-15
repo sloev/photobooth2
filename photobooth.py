@@ -29,7 +29,7 @@ def main():
             image = camera.shoot()
             social_queue.put(image)
             if not i % 2: #first and third image gets printed
-                printer_queue.put(image)
+                printer_queue.put(image.getdata())
         sys.stderr.write("press \"s\" to shoot!\n")
 
     wiring_setup()
