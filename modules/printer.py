@@ -14,12 +14,13 @@ class PrinterWorker(multiprocessing.Process):
         self._queue = _queue
         self._printer = Printer()
         self._strip = Image.open("end_strip.jpg")
+        self._test = Image.open("test.jpg")
 
     def run(self):
         counter = 0
         for image in iter(self._queue.get, None):
             if image:
-                image = self._compose_image(image)
+                image = self._compose_image(self._test)
                 self._printer.print_image(image)
                 counter += 1
                 if counter > 1:
