@@ -26,7 +26,7 @@ class SocialWorker(multiprocessing.Process):
         counter = 0
         for image in iter(self._queue.get, None):
             if image:
-                image.save("socialout.jpg", "JPEG")
+                image.save("socialout%d.jpg"%counter, "JPEG")
                 counter += 1
                 if counter > 3:
                     counter = 0
