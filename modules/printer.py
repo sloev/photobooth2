@@ -19,7 +19,7 @@ class PrinterWorker(multiprocessing.Process):
         counter = 0
         for image in iter(self._queue.get, None):
             if image:
-                image = self._compose_image(image)
+                #image = self._compose_image(image)
                 self._printer.print_image(image)
                 counter += 1
                 if counter > 1:
@@ -32,7 +32,7 @@ class PrinterWorker(multiprocessing.Process):
         bbox = img.getbbox()
         image = img.crop(((bbox[2]/2)-(bbox[3]/2),0,(bbox[2]/2)+(bbox[3]/2),bbox[3]))
         image = image.resize((382,382))
-        image = ImageOps.expand(image, 1,(255,255,255))
+        #image = ImageOps.expand(image, 1,(255,255,255))
         return image
 
 class Printer():
