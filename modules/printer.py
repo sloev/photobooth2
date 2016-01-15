@@ -59,7 +59,7 @@ class Printer():
                                               struct.pack('2B', image.size[1] % 256,
                                                           image.size[1] / 256),
                                                           image.tobytes())))
-    sys.stdout.flush()
+        sys.stdout.flush()
 def main():
     # give usage and exit if no arguments
     if len(sys.argv) == 1:
