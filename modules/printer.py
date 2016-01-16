@@ -65,14 +65,14 @@ class Printer():
 
         # output header (GS v 0 \000), width, height, image data
         sys.stderr.write(filename)
-        with open(filename, "w") as f:
+        with open(filename, "wb") as f:
             f.write(''.join(('\x1d\x76\x30\x00',
                                   struct.pack('2B', image.size[0] / 8 % 256,
                                               image.size[0] / 8 / 256),
                                               struct.pack('2B', image.size[1] % 256,
                                                           image.size[1] / 256),
                                                           image.tobytes())))
-        shutil.copyfile(filename, "/dev/usb/lp0")
+        shutil.copyfile(filename, sys.stdout)
 def main():
     # give usage and exit if no arguments
     if len(sys.argv) == 1:
