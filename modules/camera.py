@@ -8,7 +8,7 @@ import picamera
 from PIL import Image, ImageEnhance, ImageOps
 import io
 import sys
-
+import time
 class Camera(object):
     '''
     classdocs
