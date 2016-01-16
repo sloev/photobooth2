@@ -28,7 +28,6 @@ class PrinterWorker(multiprocessing.Process):
         self._queue = _queue
         self._printer = Printer()
         self._strip = Image.open("end_strip.jpg")
-        self._test = Image.open("test.jpg")
 
     def run(self):
         counter = 0
