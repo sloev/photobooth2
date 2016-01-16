@@ -15,7 +15,7 @@ class LedWorker(multiprocessing.Process):
     def run(self):
         for cmd in iter(self._queue.get, None):
             if cmd:
-                if cmd == "on":
+                if cmd == "off":
                     for i in range(1000,-1,-1):
                         wiringpi2.pwmWrite(18,i)
                         time.sleep(0.005)
