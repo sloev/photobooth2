@@ -25,9 +25,9 @@ def main():
         wiringpi.pinMode(18, 0)
 
     def shoot():
-        for i in range(0,1025,1):
+        for i in range(0,1025,4):
             wiringpi.pwmWrite(18,i)
-            time.sleep(0.005)
+            time.sleep(0.002)
         for i in range(4):
             filename = camera.shoot("%d"%i)
             #social_queue.put(filename)
