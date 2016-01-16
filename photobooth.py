@@ -26,7 +26,7 @@ def main():
 
     def shoot():
         for i in range(0,1001,1):
-            wiringpi2.pwmWrite(18,1)
+            wiringpi.pwmWrite(18,1)
             time.sleep(0.005)
         for i in range(4):
             filename = camera.shoot("%d"%i)
@@ -35,7 +35,7 @@ def main():
                 printer_queue.put(filename)
         led_queue.put("off")
         for i in range(1000,-1,-1):
-            wiringpi2.pwmWrite(18,i)
+            wiringpi.pwmWrite(18,i)
             time.sleep(0.005)
         sys.stderr.write("press \"s\" to shoot!\n")
 
