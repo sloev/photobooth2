@@ -6,7 +6,7 @@
 import shutil
 import multiprocessing
 import sys
-from PIL import Image, ImageOps
+from PIL import Image, ImageEnhance, ImageOps
 import struct
 
 def compose_image(img):
