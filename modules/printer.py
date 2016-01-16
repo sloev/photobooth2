@@ -39,7 +39,7 @@ class PrinterWorker(multiprocessing.Process):
                 self._printer.print_image(image, filename)
                 counter += 1
                 filename+="strip"
-                if counter > 0:
+                if counter > 1:
                     counter = 0
                     self._printer.print_image(self._strip, filename)
                     sys.stderr.write("send two images, and strip to the printer!\n")
@@ -64,6 +64,7 @@ class Printer():
         image = image.convert('1')
 
         # output header (GS v 0 \000), width, height, image data
+        sys.stderr.write(filename)
         with open(filename, "w") as f:
             f.write(''.join(('\x1d\x76\x30\x00',
                                   struct.pack('2B', image.size[0] / 8 % 256,
