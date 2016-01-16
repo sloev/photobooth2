@@ -5,7 +5,7 @@ Created on Apr 22, 2014
 '''
 
 import picamera
-from PIL import Image, ImageOps
+from PIL import Image, ImageEnhance, ImageOps
 #import io
 import sys
 
