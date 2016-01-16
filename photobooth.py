@@ -25,13 +25,18 @@ def main():
         wiringpi.pinMode(18, 0)
 
     def shoot():
-        led_queue.put("on")
+        for i in range(0,1001,1):
+            wiringpi2.pwmWrite(18,1)
+            time.sleep(0.005)
         for i in range(4):
             filename = camera.shoot("%d"%i)
             social_queue.put(filename)
             if not i % 2: #first and third image gets printed
                 printer_queue.put(filename)
         led_queue.put("off")
+        for i in range(1000,-1,-1):
+            wiringpi2.pwmWrite(18,i)
+            time.sleep(0.005)
         sys.stderr.write("press \"s\" to shoot!\n")
 
     wiring_setup()
