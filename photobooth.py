@@ -8,7 +8,7 @@ from PIL import Image
 
 from modules.printer import PrinterWorker
 from modules.social import SocialWorker
-
+from modules.led import LedWorker
 from modules.camera import Camera
 
 from PIL import ImageFile
@@ -25,11 +25,13 @@ def main():
         wiringpi.pinMode(18, 0)
 
     def shoot():
+        led_queue.put("on")
         for i in range(4):
             filename = camera.shoot("%d"%i)
             social_queue.put(filename)
             if not i % 2: #first and third image gets printed
                 printer_queue.put(filename)
+        led_queue.put("off")
         sys.stderr.write("press \"s\" to shoot!\n")
 
     wiring_setup()
@@ -39,8 +41,13 @@ def main():
     social_queue = multiprocessing.Queue()
     queues.append(social_queue)
     camera = Camera()
+    led_queue = multiprocessing.Queue()
+    queues.append(led_queue)
+
 
     procs = []
+    led_worker = LedWorker(led_queue)
+    procs.append(led_worker)
     printer_worker = PrinterWorker(printer_queue)
     procs.append(printer_worker)
     social_worker = SocialWorker(social_queue)
