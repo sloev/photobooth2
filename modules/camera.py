@@ -27,7 +27,7 @@ class Camera(object):
         stream = io.BytesIO()
         self.camera.capture(stream, format='jpeg')
         stream.seek(0)
-        image = Image.open(stream, "JPEG")
+        image = Image.open(stream)
         image=ImageOps.grayscale(image)
         enh = ImageEnhance.Brightness(image)
         image = enh.enhance(1.3)
@@ -35,7 +35,7 @@ class Camera(object):
         image = enh.enhance(1.3)
         filename = "images/%s.jpg" % filename
         time.sleep(1)
-        image.save(filename, "JPEG")
+        image.save(filename)
         #self.camera.capture(filename)
         sys.stderr.write("[*] camera took one photo\n")
 
