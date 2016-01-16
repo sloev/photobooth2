@@ -72,10 +72,7 @@ class Printer():
                                               struct.pack('2B', image.size[1] % 256,
                                                           image.size[1] / 256),
                                                           image.tobytes())))
-        try:
-            shutil.copyfile(filename, "/dev/usb/lp0")
-        except Exception:
-            sys.stderr.write("error in copy file")
+        shutil.copyfile(filename, "/dev/usb/lp0")
 def main():
     # give usage and exit if no arguments
     if len(sys.argv) == 1:
