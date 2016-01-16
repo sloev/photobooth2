@@ -29,9 +29,9 @@ class Camera(object):
         stream.seek(0)
         image = Image.open(stream)
         enh = ImageEnhance.Brightness(image)
-        image = eng.enhance(1.3)
+        image = enh.enhance(1.3)
         enh = ImageEnhance.Contrast(image)
-        image = eng.enhance(1.3)
+        image = enh.enhance(1.3)
         filename = "images/%s.jpg" % filename
         image.save(filename)
         #self.camera.capture(filename)
