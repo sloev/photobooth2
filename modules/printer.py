@@ -5,7 +5,7 @@
 
 import multiprocessing
 import sys
-from PIL import Image, ImageOps
+from PIL import Image, ImageEnhance,ImageOps
 import struct
 
 class PrinterWorker(multiprocessing.Process):
@@ -36,6 +36,11 @@ class PrinterWorker(multiprocessing.Process):
         image = img.crop(((bbox[2]/2)-(bbox[3]/2),0,(bbox[2]/2)+(bbox[3]/2),bbox[3]))
         image = image.resize((384,384))
         #image = ImageOps.expand(image, 1,(255,255,255))
+        image=ImageOps.grayscale(image)
+        enh = ImageEnhance.Brightness(image)
+        image = enh.enhance(1.3)
+        enh = ImageEnhance.Contrast(image)
+        image = enh.enhance(1.3)
         return image
 
 class Printer():
