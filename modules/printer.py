@@ -38,7 +38,8 @@ class PrinterWorker(multiprocessing.Process):
                 filename = filename + ".bin"
                 self._printer.print_image(image, filename)
                 counter += 1
-                if counter > 1:
+                filename+="strip"
+                if counter > 0:
                     counter = 0
                     self._printer.print_image(self._strip, filename)
                     sys.stderr.write("send two images, and strip to the printer!\n")
@@ -73,7 +74,7 @@ class Printer():
         try:
             shutil.copyfile(filename, "/dev/usb/lp0")
         except Exception:
-            pass
+            sys.stderr.write("error in copy file")
 def main():
     # give usage and exit if no arguments
     if len(sys.argv) == 1:
