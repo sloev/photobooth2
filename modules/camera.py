@@ -6,7 +6,7 @@ Created on Apr 22, 2014
 
 import picamera
 from PIL import Image, ImageEnhance, ImageOps
-#import io
+import io
 import sys
 
 class Camera(object):
