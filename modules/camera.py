@@ -27,6 +27,7 @@ class Camera(object):
         stream = io.BytesIO()
         self.camera.capture(stream, format='jpeg')
         stream.seek(0)
+        image=ImageOps.grayscale(image)
         image = Image.open(stream)
         enh = ImageEnhance.Brightness(image)
         image = enh.enhance(1.3)

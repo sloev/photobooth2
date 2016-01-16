@@ -29,7 +29,7 @@ def main():
             wiringpi.pwmWrite(18,i)
             time.sleep(0.002)
         for i in range(4):
-            filename = "test.jpg"#camera.shoot("%d"%i)
+            filename = camera.shoot("%d"%i)
             #social_queue.put(filename)
             if not i % 2: #first and third image gets printed
                 printer_queue.put(filename)
