@@ -33,6 +33,7 @@ class PrinterWorker(multiprocessing.Process):
         counter = 0
         for filename in iter(self._queue.get, None):
             if filename:
+                import time
                 time.sleep(1)
                 image = Image.open(filename)
                 image = compose_image(image)
