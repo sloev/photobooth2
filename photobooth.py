@@ -34,7 +34,7 @@ def main():
 
             filename = "images/out%d.jpg"%i
             os.system("raspistill -t 1 -w 1024 -h 768 -o %s"% filename)
-            #social_queue.put(filename)
+            social_queue.put(filename)
             if not i % 2==0: #first and third image gets printed
                 printer_queue.put(filename)
         led_queue.put("off")
