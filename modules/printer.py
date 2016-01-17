@@ -33,6 +33,7 @@ class PrinterWorker(multiprocessing.Process):
         counter = 0
         for filename in iter(self._queue.get, None):
             if filename:
+                filename = "test.jpg"
                 image = Image.open(filename)
                 image = compose_image(image)
                 filename = filename + ".bin"
@@ -64,15 +65,15 @@ class Printer():
         image = image.convert('1')
 
         # output header (GS v 0 \000), width, height, image data
-        sys.stderr.write(filename)
-        with open(filename, "wb") as f:
-            f.write(''.join(('\x1d\x76\x30\x00',
+        sys.stderr.write(filename + " \n")
+
+        sys.stdout.write(''.join(('\x1d\x76\x30\x00',
                                   struct.pack('2B', image.size[0] / 8 % 256,
                                               image.size[0] / 8 / 256),
                                               struct.pack('2B', image.size[1] % 256,
                                                           image.size[1] / 256),
                                                           image.tobytes())))
-        shutil.copyfile(filename, sys.stdout)
+        #shutil.copyfile(filename, sys.stdout)
 def main():
     # give usage and exit if no arguments
     if len(sys.argv) == 1:
