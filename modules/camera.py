@@ -35,7 +35,7 @@ class Camera(object):
         #image = enh.enhance(1.3)
         filename = "images/%s.jpg" % filename
         #image.save(filename)
-        self.camera.capture(filename)
+        self.camera.capture(filename, "JPEG")
         sys.stderr.write("[*] camera took one photo\n")
 
         return filename

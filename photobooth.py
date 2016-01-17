@@ -30,7 +30,6 @@ def main():
             time.sleep(0.002)
         for i in range(4):
             filename = camera.shoot("%d"%i)
-            time.sleep(1)
             #social_queue.put(filename)
             if not i % 2==0: #first and third image gets printed
                 printer_queue.put(filename)
