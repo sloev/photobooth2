@@ -9,7 +9,7 @@ from PIL import Image
 from modules.printer import PrinterWorker
 from modules.social import SocialWorker
 from modules.led import LedWorker
-from modules.camera import Camera
+#from modules.camera import Camera
 
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -32,7 +32,7 @@ def main():
             time.sleep(0.002)
         for i in range(4):
 
-            filename = "/tmp/out%d.jpg"%i
+            filename = "images/out%d.jpg"%i
             os.system("raspistill -o %s"% filename)
             #social_queue.put(filename)
             if not i % 2==0: #first and third image gets printed
@@ -49,7 +49,6 @@ def main():
     queues.append(printer_queue)
     social_queue = multiprocessing.Queue()
     queues.append(social_queue)
-    camera = Camera()
     led_queue = multiprocessing.Queue()
     queues.append(led_queue)
 
