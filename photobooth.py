@@ -14,6 +14,8 @@ from modules.camera import Camera
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
+import os
+
 def main():
     def wiring_setup():
         wiringpi.wiringPiSetupGpio()
@@ -29,7 +31,9 @@ def main():
             wiringpi.pwmWrite(18,i)
             time.sleep(0.002)
         for i in range(4):
-            filename = camera.shoot("%d"%i)
+
+            filename = "/tmp/out%d.jpg"%i
+            os.system("raspistill -o %s"% filename)
             #social_queue.put(filename)
             if not i % 2==0: #first and third image gets printed
                 printer_queue.put(filename)
