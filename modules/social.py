@@ -12,6 +12,8 @@ from facepy import GraphAPI
 from PIL import Image
 import flickr_api as flickr
 import io
+from websocket import create_connection
+
 class SocialWorker(multiprocessing.Process):
     def __init__(self, _queue):
         super(SocialWorker, self).__init__()
@@ -27,7 +29,20 @@ class SocialWorker(multiprocessing.Process):
             flickr.set_auth_handler("flickr.auth")
             user = flickr.test.login()
             sys.stderr.write("flickr\n%s"%str(user))
-
+            photos = []
+            for i in user.getPhotos():
+                photos += [
+                        {'instruction':'post_photo',
+                            'args': {
+                                'title':i.title,
+                                'url':i.getSizes()['Original']['source'],
+                                'date':i.getInfo()['taken']
+                                },
+                            'callback_id':''}]
+            sys.stderr.write("connecting to ws")
+            self.ws = create_connection("ws://127.0.0.1:8888")
+            for args in photos:
+                self.ws.send(json.dumps(args))
     def run(self):
         counter = 0
         for image_file in iter(self._queue.get, None):
