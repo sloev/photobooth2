@@ -12,12 +12,17 @@ from facepy import GraphAPI
 from PIL import Image
 import flickr_api as flickr
 import io
-from websocket import create_connection
+from websocket import create_connection, WebSocketConnectionClosedException
+
+pix_len = 3
+
+
 
 class SocialWorker(multiprocessing.Process):
     def __init__(self, _queue):
         super(SocialWorker, self).__init__()
         self._queue = _queue
+        sys.stderr.write("connecting to ws\n")
         with open("photonumber.txt", 'r') as f:
             self._photonumber = int(f.readline())
         with open('apiconfigs.txt', 'rb') as fp:
@@ -28,21 +33,25 @@ class SocialWorker(multiprocessing.Process):
             flickr.set_keys(**fc)
             flickr.set_auth_handler("flickr.auth")
             user = flickr.test.login()
-            sys.stderr.write("flickr\n%s"%str(user))
-            photos = []
+            sys.stderr.write("flickr\n%s\n"%str(user))
+            self.ws = create_connection("ws://127.0.0.1:8888")
+            counter = 0
             for i in user.getPhotos():
-                photos += [
-                        {'instruction':'post_photo',
+                sys.stderr.write("%d - " %(counter+1))
+                args = {'instruction':'post_photo',
                             'args': {
                                 'title':i.title,
                                 'url':i.getSizes()['Original']['source'],
                                 'date':i.getInfo()['taken']
                                 },
-                            'callback_id':''}]
-            sys.stderr.write("connecting to ws")
-            self.ws = create_connection("ws://127.0.0.1:8888")
-            for args in photos:
+                            'callback_id':''}
                 self.ws.send(json.dumps(args))
+
+                sys.stderr.write("done\n")
+                counter+=1
+                if counter>pix_len:
+                    break
+
     def run(self):
         counter = 0
         for image_file in iter(self._queue.get, None):
@@ -62,6 +71,20 @@ class SocialWorker(multiprocessing.Process):
                     message = "[ %s ]" %file_str
                     self._facebook.upload_image(stream, message)
                     flickr_image = flickr.upload(photo_file=filename,title=message)
+                    for i in range(2):
+                        try:
+                            kwargs = {'instruction':'post_photo',
+                                'args': {
+                                    'title':flickr_image.title,
+                                    'url':flickr_image.getSizes()['Original']['source'],
+                                    'date':flickr_image.getInfo()['taken']
+                                    },
+                                'callback_id':''}
+                            self.ws.send(json.dumps(kwargs))
+                            break
+                        except:
+                            sys.stderr.write("error in ws")
+                            self.ws = create_connection("ws://127.0.0.1:8888")
                     sys.stderr.write("flickr_image\n%s\n"%str(flickr_image))
                     self._photonumber += 1
                     f = open("photonumber.tmp", 'w')
@@ -70,6 +93,12 @@ class SocialWorker(multiprocessing.Process):
                     os.fsync(f.fileno())
                     f.close()
                     os.rename("photonumber.tmp", "photonumber.txt")
+        logging.info("stopping server")
+        server.stop()
+        logging.info("stopping ioloop")
+        stop_ioloop()
+        logging.info("joining thread")
+        thread.join()
         sys.stderr.write("social worker joined\n")
 
     def compose_image(self, images):

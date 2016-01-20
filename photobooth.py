@@ -70,7 +70,6 @@ def main():
     printer_worker = PrinterWorker(printer_queue)
     procs.append(printer_worker)
     social_worker = SocialWorker(social_queue)
-
     procs.append(social_worker)
 
     for i in procs:
