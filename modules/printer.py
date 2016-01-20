@@ -31,19 +31,17 @@ class PrinterWorker(multiprocessing.Process):
 
     def run(self):
         counter = 0
-        for filename in iter(self._queue.get, None):
-            if filename:
-                import time
-                time.sleep(1)
-                image = Image.open(filename)
-                image = compose_image(image)
-                filename = filename + ".bin"
-                self._printer.print_image(image, filename)
+        image_data = ''
+        for image_file in iter(self._queue.get, None):
+            if image_file:
+                image = compose_image(image_file)
+                image_data += self._printer.print_image(image)
                 counter += 1
-                filename+="strip"
                 if counter > 1:
                     counter = 0
-                    self._printer.print_image(self._strip, filename)
+                    image_data += self._printer.print_image(self._strip)
+                    sys.stdout.write(image_data)
+                    image_data = ''
                     sys.stderr.write("send two images, and strip to the printer!\n")
         sys.stderr.write("printer joined\n")
 
@@ -55,7 +53,7 @@ class Printer():
         pass
 
     # print all of the images!
-    def print_image(self, image, filename):
+    def print_image(self, image):
         if image.mode != '1':
             image = image.convert('1')
 
@@ -66,14 +64,13 @@ class Printer():
         image = image.convert('1')
 
         # output header (GS v 0 \000), width, height, image data
-        sys.stderr.write(filename + " \n")
 
-        sys.stdout.write(''.join(('\x1d\x76\x30\x00',
+        return ''.join(('\x1d\x76\x30\x00',
                                   struct.pack('2B', image.size[0] / 8 % 256,
                                               image.size[0] / 8 / 256),
                                               struct.pack('2B', image.size[1] % 256,
                                                           image.size[1] / 256),
-                                                          image.tobytes())))
+                                                          image.tobytes()))
         #shutil.copyfile(filename, sys.stdout)
 def main():
     # give usage and exit if no arguments

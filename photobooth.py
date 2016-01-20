@@ -1,20 +1,25 @@
+
+debug = True
 import sys
 import select
 import multiprocessing
 import time
 
-import wiringpi2 as wiringpi
-from PIL import Image
+if not debug:
+    import wiringpi2 as wiringpi
+    from modules.led import LedWorker
 
 from modules.printer import PrinterWorker
+from PIL import Image
+
 from modules.social import SocialWorker
-from modules.led import LedWorker
 #from modules.camera import Camera
 
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-import os
+import os, shutil
+
 
 def main():
     def wiring_setup():
@@ -27,23 +32,28 @@ def main():
         wiringpi.pinMode(18, 0)
 
     def shoot():
-        for i in range(0,1025,4):
-            wiringpi.pwmWrite(18,i)
-            time.sleep(0.002)
+        if not debug:
+            for i in range(0,1025,4):
+                wiringpi.pwmWrite(18,i)
+                time.sleep(0.002)
         for i in range(4):
-
-            filename = "images/out%d.jpg"%i
-            os.system("raspistill -ex night -t 1 -w 1024 -h 768 -o %s"% filename)
-            social_queue.put(filename)
+            timestr = time.strftime("%Y%m%d-%H%M%S")
+            filename = "images/%s.jpg"%timestr
+            if debug:
+                shutil.copyfile("test.jpg", filename)
+            else:
+                os.system("raspistill -ex night -t 1 -w 1024 -h 768 -o %s"% filename)
+            image_file = Image.open(filename)
+            social_queue.put(image_file)
             if not i % 2==0: #first and third image gets printed
-                printer_queue.put(filename)
-        led_queue.put("off")
-        for i in range(1024,-1,-1):
-            wiringpi.pwmWrite(18,i)
-            time.sleep(0.002)
+                printer_queue.put(image_file)
+        if not debug:
+            for i in range(1024,-1,-1):
+                wiringpi.pwmWrite(18,i)
+                time.sleep(0.002)
         sys.stderr.write("press \"s\" to shoot!\n")
-
-    wiring_setup()
+    if not debug:
+        wiring_setup()
     queues = []
     printer_queue = multiprocessing.Queue()
     queues.append(printer_queue)
@@ -54,8 +64,9 @@ def main():
 
 
     procs = []
-    led_worker = LedWorker(led_queue)
-    procs.append(led_worker)
+    if not debug:
+        led_worker = LedWorker(led_queue)
+        procs.append(led_worker)
     printer_worker = PrinterWorker(printer_queue)
     procs.append(printer_worker)
     social_worker = SocialWorker(social_queue)
@@ -69,10 +80,11 @@ def main():
     try:
         while True:
             time.sleep(0.2)
-            if(wiringpi.digitalRead(4) == 0):
-                time.sleep(0.2)
+            if not debug:
                 if(wiringpi.digitalRead(4) == 0):
-                    shoot()
+                    time.sleep(0.2)
+                    if(wiringpi.digitalRead(4) == 0):
+                        shoot()
             while sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
                 c = sys.stdin.readline()
                 c = c[0:1]
@@ -89,9 +101,9 @@ def main():
     for i in procs:
         i.join()
     sys.stderr.write("all joined!, cleaning up up gpio now\n")
-    wiring_cleanup()
+    if not debug:
+        wiring_cleanup()
     sys.stderr.write("all clean, goodbye!\n")
-
 
 if __name__ == "__main__":
     main()

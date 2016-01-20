@@ -10,8 +10,8 @@ import os
 import json,time
 from facepy import GraphAPI
 from PIL import Image
-
-
+import flickr_api as flickr
+import io
 class SocialWorker(multiprocessing.Process):
     def __init__(self, _queue):
         super(SocialWorker, self).__init__()
@@ -21,26 +21,38 @@ class SocialWorker(multiprocessing.Process):
         with open('apiconfigs.txt', 'rb') as fp:
             config = json.load(fp)
             self._facebook = Facebook(config["facebook"])
+            fc = config['flickr']
+            fc = {'api_key':str(fc['api_key']), 'api_secret':str(fc['api_secret'])}
+            flickr.set_keys(**fc)
+            flickr.set_auth_handler("flickr.auth")
+            user = flickr.test.login()
+            sys.stderr.write("flickr\n%s"%str(user))
 
     def run(self):
         counter = 0
-        for filename in iter(self._queue.get, None):
-            if filename:
-                image = Image.open(filename)
+        for image_file in iter(self._queue.get, None):
+            if image_file:
                 #image.save("socialout%d.jpg"%counter, "JPEG")
                 counter += 1
                 if counter > 3:
+                    filename = "images/social_out.jpg"
+                    stream = io.BytesIO()
+                    image_file.save(stream, format='JPEG')
+                    image_file.save(filename, format='JPEG')
+                    stream.seek(0)
+                    #image_file.save(filename)
                     counter = 0
-
                     sys.stderr.write("socializing image\n")
-                    message = "Photo #%d" % self._photonumber
-                    image.save("tmp.jpg", "JPEG")
-                    self._facebook.upload_image("tmp.jpg", message)
+                    file_str = bin(self._photonumber)[2:].replace('1','|').replace('0','-')
+                    message = "[ %s ]" %file_str
+                    self._facebook.upload_image(stream, message)
+                    flickr_image = flickr.upload(photo_file=filename,title=message)
+                    sys.stderr.write("flickr_image\n%s\n"%str(flickr_image))
                     self._photonumber += 1
                     f = open("photonumber.tmp", 'w')
                     f.write(str(self._photonumber))
                     f.flush()
-                    os.fsync(f.fileno()) 
+                    os.fsync(f.fileno())
                     f.close()
                     os.rename("photonumber.tmp", "photonumber.txt")
         sys.stderr.write("social worker joined\n")
@@ -64,18 +76,18 @@ class Facebook(object):
         self.facebook = GraphAPI(config["token"])
         try:
             me=self.facebook.get('me')
-            sys.stderr.write(json.dumps(me, indent=4))
+            #sys.stderr.write(json.dumps(me, indent=4))
 
         except:
             pass#self.facebook=None
 
-    def upload_image(self,image, messageStr="sdfsafdsdfafgsdghdef"):
+    def upload_image(self,imagefile, messageStr="sdfsafdsdfafgsdghdef"):
         tries=0
         while(tries<5):
             try:
                 s = self.facebook.post(
                                    path = 'me/photos',
-                                   source = open(image),
+                                   source = imagefile,
                                    message=messageStr
                                    )
                 break
@@ -85,3 +97,5 @@ class Facebook(object):
                 tries=tries+1
 
         sys.stderr.write("finnished uploading to facebook\n")
+if __name__ == "__main__":
+    sw = SocialWorker(None)
