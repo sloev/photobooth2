@@ -1,5 +1,4 @@
 pillow
 facepy
 wiringpi2
-websocket-client
-sloev-wsrpc
+supervisor
