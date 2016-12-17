@@ -12,7 +12,6 @@ import multiprocessing
 
 from log import setup_logging
 
-import threading
 
 
 logging = setup_logging()
@@ -54,7 +53,9 @@ def print_filename(filename):
 
     new_filename = "./social/{}.jpg".format(timestr)
     logger.info("moving file to social upload")
-    shutil.move(filename, new_filename)
+    image = image.convert('1')
+    image.save(new_filename)
+    os.remove(filename)
     logger.info("done printing")
 
 

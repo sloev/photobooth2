@@ -25,12 +25,13 @@ def create_session(config_filename='apiconfigs.txt'):
 
         facebook_config = config["facebook"]
         session.facebook = GraphAPI(facebook_config["token"])
-        session.facebook.get('me')
 
+        print(session.facebook.get('me'))
 
 def social_upload(filename):
+    image_file = open(filename, "rb")
 
-    message = "Loppen photo #{}".format(uuid.uuid4())
+    message = "Loppen photo {}".format(uuid.uuid4())
     logger.info("uploading image, filename: {} message: {}".format(
         filename, message
     ))
@@ -41,14 +42,16 @@ def social_upload(filename):
             logger.info("uploading to facebook, try # {}".format(tries))
             s = session.facebook.post(
                        path = 'me/photos',
-                       source = filename,
+                       source = image_file,
                        message = message
             )
-            logger.info("uploaded to facebook")
+            logger.info("uploaded to facebook,{}".format(s))
+            os.remove(filename)
+            logger.info("removed {}".format(filename))
             break
         except:
-            logger.error("facebook error, try # {}".format(tries))
-            time.sleep(0.1)
+            logger.exception("facebook error, try # {}".format(tries))
+            time.sleep(5)
             tries -= 1
 
     if not tries:
@@ -63,8 +66,10 @@ def main():
             for dirpath, dnames, fnames in os.walk("./social/"):
                 for filename in fnames:
                     if not filename.endswith(".py"):
+                        filename = os.path.join(dirpath, filename)
                         logger.info("found file!!! : {}".format(filename))
                         social_upload(filename)
+                        time.sleep(5)
             logger.info("no files, sleeping 5 seconds")
             time.sleep(5)
             logger.info("woke up!")
