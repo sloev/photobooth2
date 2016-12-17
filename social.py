@@ -68,6 +68,7 @@ def main():
                     if not filename.endswith(".py"):
                         filename = os.path.join(dirpath, filename)
                         logger.info("found file!!! : {}".format(filename))
+                        time.sleep(2)
                         social_upload(filename)
                         time.sleep(5)
             logger.info("no files, sleeping 5 seconds")

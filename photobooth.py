@@ -5,6 +5,7 @@ import sys
 import time
 import shutil
 import sys
+import os
 from PIL import Image, ImageEnhance, ImageOps
 import struct
 import wiringpi2 as wiringpi
@@ -53,8 +54,12 @@ def print_filename(filename):
 
     new_filename = "./social/{}.jpg".format(timestr)
     logger.info("moving file to social upload")
-    image = image.convert('1')
-    image.save(new_filename)
+    new_image = image.convert(mode='P',
+        colors=256,
+        dither=1,
+        palette=Image.ADAPTIVE)
+    new_image = new_image.convert("RGB")
+    new_image.save(new_filename)
     os.remove(filename)
     logger.info("done printing")
 
