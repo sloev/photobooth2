@@ -2,3 +2,4 @@ pillow
 facepy
 wiringpi2
 supervisor
+flask
