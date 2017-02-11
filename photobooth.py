@@ -25,7 +25,7 @@ def fade_led(wiringpi):
     for i in range(0,301,1):
         wiringpi.pwmWrite(18,i)
         time.sleep(0.004)
-    time.sleep(3)
+    time.sleep(4)
     for i in range(301,-1,-1):
         wiringpi.pwmWrite(18,i)
         time.sleep(0.003)
