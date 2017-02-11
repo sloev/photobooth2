@@ -22,11 +22,11 @@ logger = logging.getLogger(__name__)
 strip = Image.open("end_strip.jpg")
 
 def fade_led(wiringpi):
-    for i in range(0,701,1):
+    for i in range(0,501,1):
         wiringpi.pwmWrite(18,i)
         time.sleep(0.004)
     time.sleep(3)
-    for i in range(701,-1,-1):
+    for i in range(501,-1,-1):
         wiringpi.pwmWrite(18,i)
         time.sleep(0.003)
     logging.info("led fading done")
@@ -61,7 +61,7 @@ def print_filename(filename):
     new_image = new_image.convert("RGB")
     new_image.save(new_filename)
     os.remove(filename)
-    logger.info("done printing")
+    logger.info("done sending to printer")
 
 
 def print_image(image):
@@ -95,10 +95,6 @@ def compose_image(image):
     image = image.resize((384,384))
     #image = ImageOps.expand(image, 1,(255,255,255))
     Image = ImageOps.grayscale(image)
-    enh = ImageEnhance.Brightness(image)
-    image = enh.enhance(1.3)
-    enh = ImageEnhance.Contrast(image)
-    image = enh.enhance(1.3)
     return image
 
 def main():
