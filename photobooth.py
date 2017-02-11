@@ -60,7 +60,6 @@ def print_filename(filename):
         palette=Image.ADAPTIVE)
     new_image = new_image.convert("RGB")
     new_image.save(new_filename)
-    os.remove(filename)
     logger.info("done sending to printer")
 
 
