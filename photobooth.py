@@ -95,6 +95,10 @@ def compose_image(image):
     image = image.resize((384,384))
     #image = ImageOps.expand(image, 1,(255,255,255))
     Image = ImageOps.grayscale(image)
+    enh = ImageEnhance.Brightness(image)		
+    image = enh.enhance(1.3)		
+    enh = ImageEnhance.Contrast(image)		
+    image = enh.enhance(1.3)
     return image
 
 def main():
