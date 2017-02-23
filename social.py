@@ -70,7 +70,7 @@ def main():
                         logger.info("found file!!! : {}".format(filename))
                         time.sleep(2)
                         social_upload(filename)
-                        time.sleep(5)
+                        time.sleep(10)
             logger.info("no files, sleeping 5 seconds")
             time.sleep(5)
             logger.info("woke up!")
