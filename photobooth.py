@@ -34,9 +34,9 @@ def fade_led(wiringpi):
 def shoot():
     logger.info("shooting a pic")
 
-    timestr = time.strftime("%Y%m%d-%H%M%S")
+    timestamp = int(time.time())
 
-    filename = "./images/{}.jpg".format(timestr)
+    filename = "./images/{}.jpg".format(timestamp)
     call(["raspistill", "-o", filename])
     logger.info("shot a pic: {}".format(filename))
     return filename
@@ -50,9 +50,9 @@ def print_filename(filename):
 
     logger.info("printing strip")
     print_image(strip)
-    timestr = time.strftime("%Y%m%d-%H%M%S")
+    timestamp = int(time.time())
 
-    new_filename = "./social/{}.jpg".format(timestr)
+    new_filename = "./social/{}.jpg".format(timestamp)
     logger.info("moving file to social upload")
     new_image = image.convert(mode='P',
         colors=256,
